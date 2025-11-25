@@ -4,9 +4,8 @@ from typing import Any, Dict
 from confluent_kafka import Producer, KafkaError
 from fastapi import APIRouter, HTTPException, Request
 
-from order_service.config import settings
-from config import order_logger
-from utils.kafka_utils import delivery_report
+from config import order_logger, settings
+from src.services.utils import delivery_report
 
 order_router = APIRouter(
     prefix="/orders",

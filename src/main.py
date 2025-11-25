@@ -1,10 +1,10 @@
 from contextlib import asynccontextmanager
 
 import uvicorn
+from confluent_kafka.admin import AdminClient, NewTopic
 from fastapi import FastAPI
 
-from config import order_logger
-from order_service.routers import api_router
+from src.routers import api_router
 
 
 @asynccontextmanager
@@ -21,22 +21,8 @@ app = FastAPI(
 app.include_router(api_router)
 
 
-def delivery_report(err, msg):
-    if err is not None:
-        order_logger.error("Message delivery failed: %s", err)
-    else:
-        order_logger.info(
-            "Message delivered to %s [%d] at offset %s",
-            msg.topic(),
-            msg.partition(),
-            msg.offset(),
-        )
-
-
 if __name__ == "__main__":
-    from confluent_kafka.admin import AdminClient, NewTopic
-
-    admin = AdminClient({"bootstrap.servers": "localhost:9092"})
+    admin = AdminClient({"bootstrap.servers": "kafka:9092"})
     topics = [
         NewTopic("orders", num_partitions=1, replication_factor=1),
         NewTopic("notifications", num_partitions=1, replication_factor=1),
@@ -52,7 +38,7 @@ if __name__ == "__main__":
             print(f"Topic {topic} already exists: {e}")
 
     uvicorn.run(
-        "order_service.main:app",
+        "src.main:app",
         host="0.0.0.0",
         port=8000,
     )
