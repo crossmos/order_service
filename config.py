@@ -2,14 +2,12 @@ import logging
 
 from pydantic_settings import BaseSettings
 
-# Базовая настройка логирования
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
-# Логгер для order-service
 order_logger = logging.getLogger("order-service")
 
 
